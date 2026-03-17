@@ -2,6 +2,8 @@
 
 A cross-platform .NET MAUI app for scanning barcodes.
 
+![Scanner demo](scanner.gif)
+
 ## Features
 
 - Barcode scanning via `BarcodeScanning.Native.Maui`
