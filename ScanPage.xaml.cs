@@ -7,6 +7,7 @@ public partial class ScanPage : ContentPage
 {
 	private readonly BarcodeDrawable _drawable = new();
 	private readonly List<string> _qualities = [];
+	private IDispatcherTimer? _statusTimer;
 
 	public ScanPage()
 	{
@@ -16,6 +17,7 @@ public partial class ScanPage : ContentPage
 
 		_qualities.AddRange(["Low", "Medium", "High", "Highest"]);
 		Quality.ItemsSource = _qualities;
+		Quality.SelectedIndex = 3; // Highest
 
 		if (DeviceInfo.Platform != DevicePlatform.MacCatalyst)
 			Quality.Title = "Quality";
@@ -23,16 +25,36 @@ public partial class ScanPage : ContentPage
 
 	protected override async void OnAppearing()
 	{
-		await AskForRequiredPermissionAsync();
+		var hasPermission = await AskForRequiredPermissionAsync();
 		base.OnAppearing();
+
+		if (!hasPermission)
+		{
+			await DisplayAlert("Camera permission required", "Please allow camera access to scan barcodes.", "OK");
+			StatusLabel.Text = "Camera permission: denied";
+			return;
+		}
+
+		Graphics.Drawable = _drawable;
+
+		// Give the page a moment to layout before enabling camera on some devices.
+		await Task.Delay(250);
+
+		Barcode.BarcodeSymbologies = BarcodeFormats.All;
+		Barcode.CaptureQuality = CaptureQuality.Highest;
+		Barcode.ForceInverted = false;
+		Barcode.AimMode = false;
+		Barcode.TapToFocusEnabled = true;
 
 		Barcode.CameraEnabled = true;
 		Barcode.PauseScanning = false;
-		Graphics.Drawable = _drawable;
+
+		StartStatusTimer();
 	}
 
 	protected override void OnDisappearing()
 	{
+		StopStatusTimer();
 		base.OnDisappearing();
 		// Keep camera enabled if you want faster back/forward nav; otherwise disable here.
 	}
@@ -46,6 +68,16 @@ public partial class ScanPage : ContentPage
 	{
 		_drawable.BarcodeResults = e.BarcodeResults;
 		Graphics.Invalidate();
+
+		var first = e.BarcodeResults?.FirstOrDefault();
+		var value = first?.DisplayValue ?? first?.RawValue;
+
+		MainThread.BeginInvokeOnMainThread(() =>
+		{
+			StatusLabel.Text = string.IsNullOrWhiteSpace(value)
+				? $"No barcode (results: {e.BarcodeResults?.Count ?? 0})"
+				: $"Detected: {value}";
+		});
 	}
 
 	private async void BackButton_Clicked(object sender, EventArgs e)
@@ -63,6 +95,12 @@ public partial class ScanPage : ContentPage
 		Barcode.TorchOn = !Barcode.TorchOn;
 	}
 
+	private void AimModeButton_Clicked(object sender, EventArgs e)
+	{
+		Barcode.AimMode = !Barcode.AimMode;
+		StatusLabel.Text = $"AimMode={(Barcode.AimMode ? "ON" : "OFF")}";
+	}
+
 	private void VibrateButton_Clicked(object sender, EventArgs e)
 	{
 		Barcode.VibrationOnDetected = !Barcode.VibrationOnDetected;
@@ -78,17 +116,50 @@ public partial class ScanPage : ContentPage
 		if (sender is not Picker picker)
 			return;
 
-		if (picker.SelectedIndex > -1 && picker.SelectedIndex < 5)
+		if (picker.SelectedIndex >= 0 && picker.SelectedIndex < _qualities.Count)
 			Barcode.CaptureQuality = (CaptureQuality)picker.SelectedIndex;
 	}
 
-	private static async Task AskForRequiredPermissionAsync()
+	private static async Task<bool> AskForRequiredPermissionAsync()
 	{
 #if ANDROID
 		var status = await Permissions.CheckStatusAsync<Permissions.Camera>();
 		if (status != PermissionStatus.Granted)
 			status = await Permissions.RequestAsync<Permissions.Camera>();
+
+		return status == PermissionStatus.Granted;
+#else
+		return true;
 #endif
+	}
+
+	private void StartStatusTimer()
+	{
+		_statusTimer ??= Dispatcher.CreateTimer();
+		_statusTimer.Interval = TimeSpan.FromSeconds(2);
+		_statusTimer.IsRepeating = true;
+		_statusTimer.Tick -= StatusTimerOnTick;
+		_statusTimer.Tick += StatusTimerOnTick;
+
+		if (!_statusTimer.IsRunning)
+			_statusTimer.Start();
+	}
+
+	private void StopStatusTimer()
+	{
+		try
+		{
+			_statusTimer?.Stop();
+		}
+		catch
+		{
+		}
+	}
+
+	private void StatusTimerOnTick(object? sender, EventArgs e)
+	{
+		StatusLabel.Text =
+			$"CameraEnabled={Barcode.CameraEnabled}, PauseScanning={Barcode.PauseScanning}, AimMode={Barcode.AimMode}, Facing={Barcode.CameraFacing}, Torch={Barcode.TorchOn}";
 	}
 
 	private sealed class BarcodeDrawable : IDrawable

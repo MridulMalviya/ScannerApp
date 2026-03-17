@@ -6,43 +6,43 @@
              Title="Scanner"
              AutomationId="ScannerPage">
 
-    <AbsoluteLayout>
-        <barcode:CameraView
-            x:Name="Camera"
-            AutomationId="ScannerCameraView"
-            AbsoluteLayout.LayoutFlags="All"
-            AbsoluteLayout.LayoutBounds="0,0,1,1"
-            OnDetectionFinished="OnDetectionFinished"
-            CaptureQuality="High"
-            ForceInverted="True"
-            TapToFocusEnabled="True"
-            BarcodeSymbologies="All"
-            AimMode="True" />
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
 
-        <GraphicsView
-            x:Name="Graphics"
-            AbsoluteLayout.LayoutFlags="All"
-            AbsoluteLayout.LayoutBounds="0,0,1,1"
-            InputTransparent="True" />
+        <Grid Grid.Row="0">
+            <barcode:CameraView
+                x:Name="Camera"
+                AutomationId="ScannerCameraView"
+                OnDetectionFinished="OnDetectionFinished"
+                CaptureQuality="High"
+                ForceInverted="True"
+                TapToFocusEnabled="True"
+                BarcodeSymbologies="All"
+                AimMode="True" />
 
-        <!-- Center aiming dot overlay -->
-        <Border
-            HorizontalOptions="Center"
-            VerticalOptions="Center"
-            WidthRequest="14"
-            HeightRequest="14"
-            Stroke="White"
-            StrokeThickness="2"
-            BackgroundColor="#66000000"
-            StrokeShape="RoundRectangle 999"
-            InputTransparent="True"
-            AbsoluteLayout.LayoutFlags="PositionProportional"
-            AbsoluteLayout.LayoutBounds="0.5,0.5,14,14" />
+            <GraphicsView
+                x:Name="Graphics"
+                InputTransparent="True" />
+
+            <Border
+                HorizontalOptions="Center"
+                VerticalOptions="Center"
+                WidthRequest="14"
+                HeightRequest="14"
+                Stroke="White"
+                StrokeThickness="2"
+                BackgroundColor="#66000000"
+                StrokeShape="RoundRectangle 999"
+                InputTransparent="True" />
+        </Grid>
 
         <Grid
+            Grid.Row="1"
             ColumnDefinitions="*,*,*,*,*,*"
-            AbsoluteLayout.LayoutFlags="All"
-            AbsoluteLayout.LayoutBounds="0,0,1,0.12"
             Padding="10"
             BackgroundColor="#66000000">
 
@@ -97,19 +97,14 @@
                 Clicked="PauseButton_Clicked" />
         </Grid>
 
-        <VerticalStackLayout
-            Padding="16"
-            Spacing="8"
-            BackgroundColor="#80000000"
-            AbsoluteLayout.LayoutFlags="All"
-            AbsoluteLayout.LayoutBounds="0,1,1,0.18">
+        <Frame Grid.Row="2" BackgroundColor="#80000000" Padding="12" Margin="10" CornerRadius="12">
             <Label
                 x:Name="ResultLabel"
                 AutomationId="ScannerResultLabel"
                 Text="Point the camera at a barcode or QR code."
                 TextColor="White"
                 LineBreakMode="WordWrap" />
-        </VerticalStackLayout>
-    </AbsoluteLayout>
+        </Frame>
+    </Grid>
 
 </ContentPage>

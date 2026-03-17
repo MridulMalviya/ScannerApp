@@ -6,73 +6,106 @@
              Title="Scan"
              Unloaded="ContentPage_Unloaded">
 
-    <AbsoluteLayout>
-        <barcode:CameraView
-            x:Name="Barcode"
-            AbsoluteLayout.LayoutFlags="All"
-            AbsoluteLayout.LayoutBounds="0,0,1,1"
-            OnDetectionFinished="CameraView_OnDetectionFinished"
-            CaptureQuality="High"
-            ForceInverted="True"
-            TapToFocusEnabled="True"
-            BarcodeSymbologies="All"
-            AimMode="True"
-            VibrationOnDetected="True" />
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
 
-        <GraphicsView
-            x:Name="Graphics"
-            AbsoluteLayout.LayoutFlags="All"
-            AbsoluteLayout.LayoutBounds="0,0,1,1"
-            InputTransparent="True" />
+        <Grid Grid.Row="0">
+            <barcode:CameraView
+                x:Name="Barcode"
+                OnDetectionFinished="CameraView_OnDetectionFinished"
+                CaptureQuality="Highest"
+                ForceInverted="False"
+                TapToFocusEnabled="True"
+                BarcodeSymbologies="All"
+                AimMode="False"
+                PoolingInterval="0"
+                VibrationOnDetected="True" />
+
+            <GraphicsView
+                x:Name="Graphics"
+                InputTransparent="True" />
+
+            <VerticalStackLayout
+                Padding="12"
+                Spacing="6"
+                BackgroundColor="#80000000"
+                VerticalOptions="End">
+                <Label
+                    Text="Status:"
+                    TextColor="White"
+                    FontAttributes="Bold" />
+                <Label
+                    x:Name="StatusLabel"
+                    Text="Starting…"
+                    TextColor="White"
+                    LineBreakMode="TailTruncation" />
+            </VerticalStackLayout>
+        </Grid>
 
         <Grid
-            ColumnDefinitions="*,*,*,*,*,*"
-            AbsoluteLayout.LayoutFlags="All"
-            AbsoluteLayout.LayoutBounds="0,0,1,0.12"
+            Grid.Row="1"
+            ColumnDefinitions="*,*,*,*,*,*,*"
             Padding="10"
             BackgroundColor="#66000000">
 
-            <Button x:Name="BackButton"
-                    Grid.Column="0"
-                    WidthRequest="50"
-                    HeightRequest="50"
-                    CornerRadius="25"
-                    Clicked="BackButton_Clicked" />
+            <Button
+                x:Name="BackButton"
+                Grid.Column="0"
+                WidthRequest="50"
+                HeightRequest="50"
+                CornerRadius="25"
+                Clicked="BackButton_Clicked" />
 
-            <Button Text="C"
-                    Grid.Column="1"
-                    WidthRequest="50"
-                    HeightRequest="50"
-                    CornerRadius="25"
-                    Clicked="CameraButton_Clicked" />
+            <Button
+                Text="C"
+                Grid.Column="1"
+                WidthRequest="50"
+                HeightRequest="50"
+                CornerRadius="25"
+                Clicked="CameraButton_Clicked" />
 
-            <Button Text="T"
-                    Grid.Column="2"
-                    WidthRequest="50"
-                    HeightRequest="50"
-                    CornerRadius="25"
-                    Clicked="TorchButton_Clicked" />
+            <Button
+                Text="T"
+                Grid.Column="2"
+                WidthRequest="50"
+                HeightRequest="50"
+                CornerRadius="25"
+                Clicked="TorchButton_Clicked" />
 
-            <Picker x:Name="Quality"
-                    Grid.Column="3"
-                    BackgroundColor="Transparent"
-                    WidthRequest="90"
-                    HeightRequest="50"
-                    SelectedIndexChanged="Quality_SelectedIndexChanged" />
+            <Button
+                Text="A"
+                Grid.Column="3"
+                WidthRequest="50"
+                HeightRequest="50"
+                CornerRadius="25"
+                Clicked="AimModeButton_Clicked" />
 
-            <Button Text="V"
-                    Grid.Column="4"
-                    WidthRequest="50"
-                    HeightRequest="50"
-                    CornerRadius="25"
-                    Clicked="VibrateButton_Clicked" />
+            <Picker
+                x:Name="Quality"
+                Grid.Column="4"
+                BackgroundColor="Transparent"
+                WidthRequest="90"
+                HeightRequest="50"
+                SelectedIndexChanged="Quality_SelectedIndexChanged" />
 
-            <Button Text="P"
-                    Grid.Column="5"
-                    WidthRequest="50"
-                    HeightRequest="50"
-                    CornerRadius="25"
-                    Clicked="PauseButton_Clicked" />
+            <Button
+                Text="V"
+                Grid.Column="5"
+                WidthRequest="50"
+                HeightRequest="50"
+                CornerRadius="25"
+                Clicked="VibrateButton_Clicked" />
+
+            <Button
+                Text="P"
+                Grid.Column="6"
+                WidthRequest="50"
+                HeightRequest="50"
+                CornerRadius="25"
+                Clicked="PauseButton_Clicked" />
         </Grid>
-    </AbsoluteLayout>
+    </Grid>
 </ContentPage>
