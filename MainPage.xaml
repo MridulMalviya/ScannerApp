@@ -14,6 +14,18 @@
             HorizontalOptions="Fill"
             VerticalOptions="Fill" />
 
+        <!-- Center aiming dot overlay -->
+        <Border
+            HorizontalOptions="Center"
+            VerticalOptions="Center"
+            WidthRequest="14"
+            HeightRequest="14"
+            Stroke="White"
+            StrokeThickness="2"
+            BackgroundColor="#66000000"
+            StrokeShape="RoundRectangle 999"
+            InputTransparent="True" />
+
         <VerticalStackLayout
             Padding="16"
             VerticalOptions="End"
