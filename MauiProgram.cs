@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using BarcodeScanning;
+using Microsoft.Extensions.Logging;
 
 namespace ScannerApp;
 
@@ -8,6 +9,7 @@ public static class MauiProgram
 	{
 		var builder = MauiApp.CreateBuilder();
 		builder
+			.UseBarcodeScanning()
 			.UseMauiApp<App>()
 			.ConfigureFonts(fonts =>
 			{

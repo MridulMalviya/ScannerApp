@@ -1,3 +1,5 @@
+using BarcodeScanning;
+
 namespace ScannerApp;
 
 public partial class MainPage : ContentPage
@@ -7,9 +9,9 @@ public partial class MainPage : ContentPage
 		InitializeComponent();
 	}
 
-	private void OnBarcodesDetected(object sender, BarcodeScanning.Native.Maui.BarcodesDetectedEventArgs e)
+	private void OnDetectionFinished(object sender, OnDetectionFinishedEventArg e)
 	{
-		var first = e.Results?.FirstOrDefault();
+		var first = e.BarcodeResults?.FirstOrDefault();
 		if (first is null)
 			return;
 
