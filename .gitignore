@@ -1,0 +1,18 @@
+## .NET / Visual Studio / MAUI
+bin/
+obj/
+
+## Rider / VS Code / Visual Studio
+.idea/
+.vscode/
+.vs/
+
+## User-specific files
+*.user
+*.suo
+*.rsuser
+*.userosscache
+*.sln.docstates
+
+## OS
+.DS_Store
