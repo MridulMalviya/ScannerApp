@@ -40,6 +40,32 @@ dotnet build -t:Run -f net9.0-android
 dotnet build -t:Run -f net9.0-ios
 ```
 
+### iOS (Development IPA)
+
+To generate an `.ipa` for **development** you must have Apple code-signing set up on your Mac:
+
+- Apple Developer account
+- iOS **Development** certificate installed in Keychain
+- Development provisioning profile for your bundle id (default is `com.companyname.scannerapp`)
+
+Verify signing identities:
+
+```bash
+security find-identity -v -p codesigning
+```
+
+Build the IPA:
+
+```bash
+dotnet publish -c Release -f net9.0-ios -p:RuntimeIdentifier=ios-arm64 -p:BuildIpa=true -p:ArchiveOnBuild=true
+```
+
+If you need to specify the signing key explicitly:
+
+```bash
+dotnet publish -c Release -f net9.0-ios -p:RuntimeIdentifier=ios-arm64 -p:BuildIpa=true -p:ArchiveOnBuild=true -p:CodesignKey="Apple Development: YOUR NAME (TEAMID)"
+```
+
 ### Mac Catalyst (macOS only)
 
 ```bash
